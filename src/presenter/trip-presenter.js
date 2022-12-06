@@ -15,7 +15,7 @@ export default class TripPresenter {
 
   init() {
     render(new FilterView(), this.filterContainer);
-    render( new SortView(), this.siteMainContainer);
+    render(new SortView(), this.siteMainContainer);
     render(this.pointListView, this.siteMainContainer);
     render(new PointEditView(), this.pointListView.getElement());
 
