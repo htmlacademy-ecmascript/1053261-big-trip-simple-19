@@ -6,7 +6,6 @@ import PointListView from '../view/point-list-view.js';
 import PointEditView from '../view/point-edit-view.js';
 
 export default class TripPresenter {
-  sortView = new SortView();
   pointListView = new PointListView();
 
   constructor({filterContainer, siteMainContainer}) {
@@ -16,7 +15,7 @@ export default class TripPresenter {
 
   init() {
     render(new FilterView(), this.filterContainer);
-    render(this.sortView, this.siteMainContainer);
+    render( new SortView(), this.siteMainContainer);
     render(this.pointListView, this.siteMainContainer);
     render(new PointEditView(), this.pointListView.getElement());
 
