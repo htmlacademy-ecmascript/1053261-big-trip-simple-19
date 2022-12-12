@@ -23,7 +23,7 @@ function offerTemplate (point) {
 
 function pointTemplate (point) {
   const destination = mockDestinations.filter((el) => el.id === point.destination)[0];
-  const title = POINT_TYPE_NAME[point.type] + ' ' + destination.title;
+  const title = `${POINT_TYPE_NAME[point.type]} ${destination.title}`;
   return (
     `<li class="trip-events__item">
       <div class="event">
