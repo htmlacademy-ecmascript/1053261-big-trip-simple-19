@@ -1,6 +1,6 @@
 import { POINT_TYPE } from './point-type';
 
-export const POINT_NAME = {
+export const POINT_TYPE_NAME = {
   [POINT_TYPE.TAXI]: 'Taxi',
   [POINT_TYPE.BUS]: 'Bus',
   [POINT_TYPE.TRAIN]: 'Train',

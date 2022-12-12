@@ -1,4 +1,5 @@
 import { getRandomArrayElement } from '../utils/common';
+import { onlyUnique } from '../utils';
 
 const offers = [
   'Upgrade to business',
@@ -7,6 +8,10 @@ const offers = [
   'Travel with kids',
   'Travel with pets',
   'Luxury',
+  'Elite',
+  'Comfort',
+  'Comfort+',
+  'People with disabilities',
 ];
 
 const mockOffers = [
@@ -44,7 +49,7 @@ function getRandomOffer() {
 function getRandomOffers () {
   const offerCount = Math.floor(Math.random() * 5);
 
-  return Array.from({ length: offerCount }, getRandomOffer).map((offer) => offer.id);
+  return Array.from({ length: offerCount }, getRandomOffer).map((offer) => offer.id).filter(onlyUnique);
 }
 
-export { getRandomOffers, mockOffers };
+export { getRandomOffers, mockOffers, offers };

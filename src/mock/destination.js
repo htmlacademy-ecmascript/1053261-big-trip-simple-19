@@ -1,6 +1,6 @@
 import { getRandomArrayElement } from '../utils/common';
 
-const cities = [
+const CITIES = [
   'Aberdeen',
   'Abilene',
   'Akron',
@@ -391,7 +391,7 @@ const cities = [
 const mockDestinations = [
   {
     id: 1,
-    title: getRandomArrayElement(cities),
+    title: getRandomArrayElement(CITIES),
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     pictures: [
       'https://loremflickr.com/248/152?random=12312',
@@ -402,7 +402,7 @@ const mockDestinations = [
   },
   {
     id: 2,
-    title: getRandomArrayElement(cities),
+    title: getRandomArrayElement(CITIES),
     description: 'Consectetur adipiscing elit.',
     pictures: [
       'https://loremflickr.com/248/152?random=12312',
@@ -413,7 +413,7 @@ const mockDestinations = [
   },
   {
     id: 3,
-    title: getRandomArrayElement(cities),
+    title: getRandomArrayElement(CITIES),
     description: 'Lorem ipsum dolor sit amet.',
     pictures: [
       'https://loremflickr.com/248/152?random=12312',
@@ -424,7 +424,7 @@ const mockDestinations = [
   },
   {
     id: 4,
-    title: getRandomArrayElement(cities),
+    title: getRandomArrayElement(CITIES),
     description: 'Aliquam id orci ut lectus varius viverra.',
     pictures: [
       'https://loremflickr.com/248/152?random=12312',
@@ -439,4 +439,4 @@ function getRandomDestination () {
   return getRandomArrayElement(mockDestinations);
 }
 
-export { getRandomDestination, mockDestinations };
+export { getRandomDestination, mockDestinations, CITIES };
