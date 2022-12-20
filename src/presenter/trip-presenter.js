@@ -4,9 +4,11 @@ import PointView from '../view/point-view.js';
 import SortView from '../view/sort-view.js';
 import PointListView from '../view/point-list-view.js';
 import PointEditView from '../view/point-edit-view.js';
+import EmptyView from '../view/empty-view';
 
 export default class TripPresenter {
   #pointListView = new PointListView();
+  #emptyView = new EmptyView();
   #filterContainer = null;
   #siteMainContainer = null;
   #pointsModel = null;
@@ -22,17 +24,21 @@ export default class TripPresenter {
     this.#points = [...this.#pointsModel.points];
 
     render(new FilterView(), this.#filterContainer);
-    render(new SortView(), this.#siteMainContainer);
-    render(this.#pointListView, this.#siteMainContainer);
+    if (this.#points.length === 0) {
+      render(this.#emptyView, this.#siteMainContainer);
+    } else {
+      render(new SortView(), this.#siteMainContainer);
+      render(this.#pointListView, this.#siteMainContainer);
 
-    for (let i = 0; i < this.#points.length; i++) {
-      this.#renderPoint(this.#points[i]);
+      for (let i = 0; i < this.#points.length; i++) {
+        this.#renderPoint(this.#points[i]);
+      }
     }
   }
 
-  #renderPoint(point) {
-    const pointComponent = new PointView({point});
-    const pointEditComponent = new PointEditView({point});
+  #renderPoint (point) {
+    const pointComponent = new PointView({ point });
+    const pointEditComponent = new PointEditView({ point });
 
     const replaceCardToForm = () => {
       this.#pointListView.element.replaceChild(pointEditComponent.element, pointComponent.element);
