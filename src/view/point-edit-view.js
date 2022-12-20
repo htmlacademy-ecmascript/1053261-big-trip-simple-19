@@ -63,7 +63,8 @@ function createOfferChoiceTemplate (point) {
 
 function createPointEditTemplate (point) {
   return (
-    `<form class="event event--edit" action="#" method="post">
+    `<li class="trip-events__item">
+        <form class="event event--edit" action="#" method="post">
       <header class="event__header">
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -131,28 +132,32 @@ function createPointEditTemplate (point) {
         </div>
         </section>
       </section>
-    </form>`
+    </form>
+     </li>`
   );
 }
 
 export default class PointEditView {
+  #point = null;
+  #element = null;
+
   constructor ({ point = BLANK_POINT }) {
-    this.point = point;
+    this.#point = point;
   }
 
-  getTemplate () {
-    return createPointEditTemplate(this.point);
+  get template () {
+    return createPointEditTemplate(this.#point);
   }
 
-  getElement () {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element () {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement () {
-    this.element = null;
+    this.#element = null;
   }
 }
