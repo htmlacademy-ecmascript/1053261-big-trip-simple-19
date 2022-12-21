@@ -1,5 +1,4 @@
-import { createElement } from '../render.js';
-import { formatDateForDisplay, formatDateTimeForHtmlAttribute, formatTimeForDisplay } from '../utils';
+import { formatDateForDisplay, formatDateTimeForHtmlAttribute, formatTimeForDisplay } from '../utils/date';
 import { POINT_TYPE_NAME } from '../constants/point-name';
 import { mockDestinations } from '../mock/destination';
 import { mockOffers } from '../mock/offer';

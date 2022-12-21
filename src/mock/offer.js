@@ -1,5 +1,5 @@
 import { getRandomArrayElement } from '../utils/common';
-import { onlyUnique } from '../utils';
+import { onlyUnique } from '../utils/common';
 
 const offers = [
   'Upgrade to business',
