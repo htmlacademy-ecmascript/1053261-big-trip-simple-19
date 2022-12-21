@@ -17,8 +17,7 @@ function getDestination (point) {
   return mockDestinations.filter((el) => el.id === point.destination)[0];
 }
 
-function createEventTypeDropdownTemplate()
-{
+function createEventTypeDropdownTemplate () {
   return Object.values(POINT_TYPE).map((pointType, ind) =>
     `
     <div class="event__type-item">
@@ -29,7 +28,7 @@ function createEventTypeDropdownTemplate()
   ).join('');
 }
 
-function createDestinationTitleTemplate(point) {
+function createDestinationTitleTemplate (point) {
   return getDestination(point)?.title;
 }
 
@@ -140,13 +139,33 @@ function createPointEditTemplate (point) {
 
 export default class PointEditView extends AbstractView {
   #point = null;
+  #handleFormSubmit = null;
+  #handleFormClose = null;
 
-  constructor ({ point = BLANK_POINT }) {
+  constructor ({ point = BLANK_POINT, onFormSubmit, onFormClose }) {
     super();
     this.#point = point;
+    this.#handleFormSubmit = onFormSubmit;
+    this.#handleFormClose = onFormClose;
+
+    this.element.querySelector('form')
+      .addEventListener('submit', this.#formSubmitHandler);
+
+    this.element.querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#formCloseHandler);
   }
 
   get template () {
     return createPointEditTemplate(this.#point);
   }
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
+
+  #formCloseHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormClose();
+  };
 }
