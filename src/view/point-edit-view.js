@@ -7,6 +7,7 @@ import { POINT_TYPE_NAME } from '../constants/point-name';
 import { POINT_TYPE } from '../constants/point-type';
 import { POINT_TYPE_CLASS } from '../constants/point-class';
 import { BLANK_POINT } from '../constants/point-blank';
+import AbstractView from '../framework/view/abstract-view';
 
 function getCitiesOptions () {
   return CITIES.map((city) => `<option value="${city}"></option>`).join('');
@@ -16,8 +17,7 @@ function getDestination (point) {
   return mockDestinations.filter((el) => el.id === point.destination)[0];
 }
 
-function createEventTypeDropdownTemplate()
-{
+function createEventTypeDropdownTemplate () {
   return Object.values(POINT_TYPE).map((pointType, ind) =>
     `
     <div class="event__type-item">
@@ -28,7 +28,7 @@ function createEventTypeDropdownTemplate()
   ).join('');
 }
 
-function createDestinationTitleTemplate(point) {
+function createDestinationTitleTemplate (point) {
   return getDestination(point)?.title;
 }
 
@@ -137,27 +137,35 @@ function createPointEditTemplate (point) {
   );
 }
 
-export default class PointEditView {
+export default class PointEditView extends AbstractView {
   #point = null;
-  #element = null;
+  #handleFormSubmit = null;
+  #handleFormClose = null;
 
-  constructor ({ point = BLANK_POINT }) {
+  constructor ({ point = BLANK_POINT, onFormSubmit, onFormClose }) {
+    super();
     this.#point = point;
+    this.#handleFormSubmit = onFormSubmit;
+    this.#handleFormClose = onFormClose;
+
+    this.element.querySelector('form')
+      .addEventListener('submit', this.#formSubmitHandler);
+
+    this.element.querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#formCloseHandler);
   }
 
   get template () {
     return createPointEditTemplate(this.#point);
   }
 
-  get element () {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
 
-    return this.#element;
-  }
-
-  removeElement () {
-    this.#element = null;
-  }
+  #formCloseHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormClose();
+  };
 }

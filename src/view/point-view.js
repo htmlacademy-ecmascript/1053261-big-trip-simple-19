@@ -4,6 +4,7 @@ import { POINT_TYPE_NAME } from '../constants/point-name';
 import { mockDestinations } from '../mock/destination';
 import { mockOffers } from '../mock/offer';
 import { getPointTypeIconUrl } from '../constants/point-type-icons';
+import AbstractView from '../framework/view/abstract-view';
 
 function offerTemplate (point) {
   if (point.offers.length === 0) {
@@ -54,27 +55,25 @@ function pointTemplate (point) {
   );
 }
 
-export default class PointView {
+export default class PointView extends AbstractView {
   #point = null;
-  #element = null;
+  #handleEditClick = null;
 
-  constructor ({ point }) {
+  constructor ({ point, onEditClick }) {
+    super();
     this.#point = point;
+    this.#handleEditClick = onEditClick;
+
+    this.element.querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#editClickHandler);
   }
 
   get template () {
     return pointTemplate(this.#point);
   }
 
-  get element () {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement () {
-    this.#element = null;
-  }
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleEditClick();
+  };
 }
