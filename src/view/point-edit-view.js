@@ -7,6 +7,7 @@ import { POINT_TYPE_NAME } from '../constants/point-name';
 import { POINT_TYPE } from '../constants/point-type';
 import { POINT_TYPE_CLASS } from '../constants/point-class';
 import { BLANK_POINT } from '../constants/point-blank';
+import AbstractView from '../framework/view/abstract-view';
 
 function getCitiesOptions () {
   return CITIES.map((city) => `<option value="${city}"></option>`).join('');
@@ -137,27 +138,15 @@ function createPointEditTemplate (point) {
   );
 }
 
-export default class PointEditView {
+export default class PointEditView extends AbstractView {
   #point = null;
-  #element = null;
 
   constructor ({ point = BLANK_POINT }) {
+    super();
     this.#point = point;
   }
 
   get template () {
     return createPointEditTemplate(this.#point);
-  }
-
-  get element () {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement () {
-    this.#element = null;
   }
 }
