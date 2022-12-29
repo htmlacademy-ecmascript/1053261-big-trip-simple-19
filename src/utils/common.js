@@ -13,7 +13,5 @@ export const getRandomArrayElement = (array) => {
   return array[randomIndex];
 };
 
-export const onlyUnique = (value, index, self) => {
-  return self.indexOf(value) === index;
-};
+export const onlyUnique = (value, index, self) => self.indexOf(value) === index;
 
