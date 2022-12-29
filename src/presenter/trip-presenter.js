@@ -23,7 +23,7 @@ export default class TripPresenter {
   init () {
     this.#points = [...this.#pointsModel.points];
 
-    render(new FilterView(), this.#filterContainer);
+    render(new FilterView({points: this.#points}), this.#filterContainer);
     if (this.#points.length === 0) {
       render(this.#emptyView, this.#siteMainContainer);
     } else {
@@ -37,6 +37,24 @@ export default class TripPresenter {
   }
 
   #renderPoint (point) {
+    const replaceCardToForm = () => {
+      // eslint-disable-next-line no-use-before-define
+      this.#pointListView.element.replaceChild(pointEditComponent.element, pointComponent.element);
+    };
+
+    const replaceFormToCard = () => {
+      // eslint-disable-next-line no-use-before-define
+      this.#pointListView.element.replaceChild(pointComponent.element, pointEditComponent.element);
+    };
+
+    const escKeyDownHandler = (evt) => {
+      if (evt.key === 'Escape' || evt.key === 'Esc') {
+        evt.preventDefault();
+        replaceFormToCard.call(this);
+        document.removeEventListener('keydown', escKeyDownHandler);
+      }
+    };
+
     const pointComponent = new PointView({
       point,
       onEditClick: () => {
@@ -56,22 +74,6 @@ export default class TripPresenter {
         document.removeEventListener('keydown', escKeyDownHandler);
       }
     });
-
-    const replaceCardToForm = () => {
-      this.#pointListView.element.replaceChild(pointEditComponent.element, pointComponent.element);
-    };
-
-    const replaceFormToCard = () => {
-      this.#pointListView.element.replaceChild(pointComponent.element, pointEditComponent.element);
-    };
-
-    const escKeyDownHandler = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        replaceFormToCard.call(this);
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    };
 
     render(pointComponent, this.#pointListView.element);
   }

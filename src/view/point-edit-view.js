@@ -1,6 +1,5 @@
-import { createElement } from '../render.js';
 import { CITIES, mockDestinations } from '../mock/destination';
-import { formatDateTimeForForm } from '../utils';
+import { formatDateTimeForForm } from '../utils/date';
 import { mockOffers } from '../mock/offer';
 import { getPointTypeIconUrl } from '../constants/point-type-icons';
 import { POINT_TYPE_NAME } from '../constants/point-name';
