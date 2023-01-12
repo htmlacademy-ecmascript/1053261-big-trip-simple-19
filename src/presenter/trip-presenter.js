@@ -1,10 +1,9 @@
-import {render} from '../framework/render.js';
+import { render } from '../framework/render.js';
 import FilterView from '../view/filter-view.js';
-import PointView from '../view/point-view.js';
 import SortView from '../view/sort-view.js';
 import PointListView from '../view/point-list-view.js';
-import PointEditView from '../view/point-edit-view.js';
 import EmptyView from '../view/empty-view';
+import PointPresenter from './point-presenter';
 
 export default class TripPresenter {
   #pointListView = new PointListView();
@@ -13,6 +12,7 @@ export default class TripPresenter {
   #siteMainContainer = null;
   #pointsModel = null;
   #points = [];
+  #pointPresenters = [];
 
   constructor ({ filterContainer, siteMainContainer, pointsModel }) {
     this.#filterContainer = filterContainer;
@@ -23,58 +23,41 @@ export default class TripPresenter {
   init () {
     this.#points = [...this.#pointsModel.points];
 
-    render(new FilterView({points: this.#points}), this.#filterContainer);
+    this.#renderFilter(this.#points);
     if (this.#points.length === 0) {
-      render(this.#emptyView, this.#siteMainContainer);
+      this.#renderEmptyView();
     } else {
-      render(new SortView(), this.#siteMainContainer);
-      render(this.#pointListView, this.#siteMainContainer);
+      this.#renderSortView();
+      this.#renderPointListView();
 
       for (let i = 0; i < this.#points.length; i++) {
-        this.#renderPoint(this.#points[i]);
+        const pointPresenter = new PointPresenter({
+          pointListView: this.#pointListView,
+          beforeEditCallback: this.#resetPoints
+        });
+        pointPresenter.init(this.#points[i]);
+        this.#pointPresenters.push(pointPresenter);
       }
     }
   }
 
-  #renderPoint (point) {
-    const replaceCardToForm = () => {
-      // eslint-disable-next-line no-use-before-define
-      this.#pointListView.element.replaceChild(pointEditComponent.element, pointComponent.element);
-    };
+  #resetPoints = () => {
+    this.#pointPresenters.forEach((pointPresenter) => pointPresenter.reset());
+  };
 
-    const replaceFormToCard = () => {
-      // eslint-disable-next-line no-use-before-define
-      this.#pointListView.element.replaceChild(pointComponent.element, pointEditComponent.element);
-    };
+  #renderFilter (points) {
+    render(new FilterView({ points: points }), this.#filterContainer);
+  }
 
-    const escKeyDownHandler = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        replaceFormToCard.call(this);
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    };
+  #renderEmptyView () {
+    render(this.#emptyView, this.#siteMainContainer);
+  }
 
-    const pointComponent = new PointView({
-      point,
-      onEditClick: () => {
-        replaceCardToForm.call(this);
-        document.addEventListener('keydown', escKeyDownHandler);
-      }
-    });
+  #renderSortView () {
+    render(new SortView(), this.#siteMainContainer);
+  }
 
-    const pointEditComponent = new PointEditView({
-      point,
-      onFormSubmit: () => {
-        replaceFormToCard.call(this);
-        document.removeEventListener('keydown', escKeyDownHandler);
-      },
-      onFormClose: () => {
-        replaceFormToCard.call(this);
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    });
-
-    render(pointComponent, this.#pointListView.element);
+  #renderPointListView () {
+    render(this.#pointListView, this.#siteMainContainer);
   }
 }
