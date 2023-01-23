@@ -1,60 +1,52 @@
-import { getRandomArrayElement } from '../utils/common';
-import { POINT_TYPE } from '../constants/point-type';
-import { getRandomOffers } from './offer';
+import {nanoid} from 'nanoid';
+import { getRandomArrayElement } from '../utils/common.js';
 
 const mockPoints = [
   {
-    type: POINT_TYPE.BUS,
+    basePrice: 1000,
+    dateFrom: new Date('2022-01-01T05:30'),
+    dateTo: new Date('2022-01-02T21:45'),
+    destination: 0,
+    selectedOffers: [1, 2],
+    type: 'taxi',
+    id: nanoid(),
+  },
+  {
+    basePrice: 2000,
+    dateFrom: new Date('2022-02-02T01:15'),
+    dateTo: new Date('2022-03-03T02:20'),
+    destination: 1,
+    selectedOffers: [1],
+    type: 'bus',
+    id: nanoid(),
+  },
+  {
+    basePrice: 3000,
+    dateFrom: new Date('2022-10-10T15:30'),
+    dateTo: new Date('2022-11-11T17:30'),
     destination: 2,
-    start: '2022-01-01 00:00:00',
-    end: '2022-01-01 05:00:00',
-    price: 10,
-    offers: getRandomOffers()
+    selectedOffers: [2, 3],
+    type: 'train',
+    id: nanoid(),
   },
   {
-    type: POINT_TYPE.CHECK_IN,
-    destination: 1,
-    start: '2022-01-01 05:00:00',
-    end: '2022-01-02 12:00:00',
-    price: 1000,
-    offers: getRandomOffers()
-  },
-  {
-    type: POINT_TYPE.DRIVE,
+    basePrice: 4000,
+    dateFrom: new Date('2022-12-01T18:00'),
+    dateTo: new Date('2023-01-11T06:30'),
     destination: 3,
-    start: '2022-01-02 12:00:00',
-    end: '2022-01-02 15:00:00',
-    price: 99,
-    offers: getRandomOffers()
+    selectedOffers: [3, 4],
+    type: 'ship',
+    id: nanoid(),
   },
-  {
-    type: POINT_TYPE.BUS,
-    destination: 4,
-    start: '2022-01-02 15:00:00',
-    end: '2022-01-03 01:00:00',
-    price: 45,
-    offers: getRandomOffers()
-  },
-  {
-    type: POINT_TYPE.SIGHTSEEING,
-    destination: 1,
-    start: '2022-01-02 15:00:00',
-    end: '2022-01-03 01:00:00',
-    price: 33,
-    offers: getRandomOffers()
-  },
-  {
-    type: POINT_TYPE.SHIP,
-    destination: 3,
-    start: '2022-01-02 15:00:00',
-    end: '2022-01-03 01:00:00',
-    price: 44,
-    offers: getRandomOffers()
-  }
 ];
 
-function getRandomPoint () {
-  return getRandomArrayElement(mockPoints);
+function getRandomPoint() {
+  const point = getRandomArrayElement(mockPoints);
+  return point;
 }
 
-export { getRandomPoint };
+function getPoints() {
+  return mockPoints;
+}
+
+export { getPoints, getRandomPoint };

@@ -1,13 +1,18 @@
-import TripPresenter from './presenter/trip-presenter.js';
-import PointsModel from './model/points-model';
+import { render } from './framework/render.js';
+import FilterView from './view/filter-view.js';
+import BoardPresenter from './presenter/board-presenter.js';
+import PointsModel from './model/points-model.js';
+import { generateFilter } from './mock/filter.js';
 
-const siteFilterElement = document.querySelector('.trip-controls');
-const siteMainElement = document.querySelector('.trip-events');
+const filterContainerElement = document.querySelector('.trip-controls__filters');
+const mainContentElement = document.querySelector('.trip-events');
 const pointsModel = new PointsModel();
-const tripPresenter = new TripPresenter({
-  filterContainer: siteFilterElement,
-  siteMainContainer: siteMainElement,
-  pointsModel
+const boardPresenter = new BoardPresenter({
+  boardContainer: mainContentElement,
+  pointsModel,
 });
 
-tripPresenter.init();
+const filters = generateFilter(pointsModel.points);
+
+render(new FilterView({ filters }), filterContainerElement);
+boardPresenter.init();
