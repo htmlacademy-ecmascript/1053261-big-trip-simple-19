@@ -37,8 +37,6 @@ const mockOffersByType = [
   },
 ];
 
-function getOffersByType() {
-  return mockOffersByType;
-}
+const getOffersByType = () => mockOffersByType;
 
 export { getOffersByType };

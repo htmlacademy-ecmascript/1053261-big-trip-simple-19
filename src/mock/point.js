@@ -1,4 +1,4 @@
-import {nanoid} from 'nanoid';
+import { nanoid } from 'nanoid';
 import { getRandomArrayElement } from '../utils/common.js';
 
 const mockPoints = [
@@ -31,7 +31,7 @@ const mockPoints = [
   },
   {
     basePrice: 4000,
-    dateFrom: new Date('2022-12-01T18:00'),
+    dateFrom: new Date('2023-12-01T18:00'),
     dateTo: new Date('2023-01-11T06:30'),
     destId: 3,
     selectedOffers: [3, 4],
@@ -40,13 +40,11 @@ const mockPoints = [
   },
 ];
 
-function getRandomPoint() {
+const getRandomPoint = () => {
   const point = getRandomArrayElement(mockPoints);
   return point;
-}
+};
 
-function getPoints() {
-  return mockPoints;
-}
+const getPoints = () => mockPoints;
 
 export { getPoints, getRandomPoint };
