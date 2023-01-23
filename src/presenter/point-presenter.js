@@ -1,4 +1,4 @@
-import {render} from '../framework/render.js';
+import { remove, render } from '../framework/render.js';
 import FilterView from '../view/filter-view.js';
 import PointView from '../view/point-view.js';
 import SortView from '../view/sort-view.js';
@@ -79,5 +79,10 @@ export default class PointPresenter {
 
   reset = () => {
     this.#handleFormClose();
+  };
+
+  destroy = () => {
+    remove(this.#pointComponent);
+    remove(this.#pointEditComponent);
   };
 }
