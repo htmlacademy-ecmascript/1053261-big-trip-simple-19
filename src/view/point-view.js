@@ -18,7 +18,7 @@ function createSelectedOffersTemplate(point) {
 
 function createPointTemplate(point) {
   const { totalPrice, dateFrom, dateTo, type } = point;
-  const destination = point.allDestinations.find((dest) => dest.id === point.destination);
+  const destination = point.allDestinations.find((dest) => dest.id === point.destId);
 
   return (
     `
