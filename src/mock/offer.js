@@ -26,8 +26,6 @@ const mockOffers = [
   },
 ];
 
-function getOffers() {
-  return mockOffers;
-}
+const getOffers = () => mockOffers;
 
 export { getOffers };

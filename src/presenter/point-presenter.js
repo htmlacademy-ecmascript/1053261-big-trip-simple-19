@@ -1,6 +1,8 @@
 import { render, replace, remove } from '../framework/render.js';
 import PointView from '../view/point-view.js';
 import PointEditView from '../view/point-edit-view.js';
+import { UserAction, UpdateType } from '../const.js';
+import { isDatesEqual, calculateTotalPrice } from '../utils/point.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -16,10 +18,12 @@ export default class PointPresenter {
   #pointEditComponent = null;
 
   #point = null;
+  #pointCommon = null;
   #mode = Mode.DEFAULT;
 
-  constructor({ pointListContainer, onDataChange, onModeChange }) {
+  constructor({ pointListContainer, pointCommon, onDataChange, onModeChange }) {
     this.#pointListContainer = pointListContainer;
+    this.#pointCommon = pointCommon;
     this.#handleDataChange = onDataChange;
     this.#handleModeChange = onModeChange;
   }
@@ -32,11 +36,13 @@ export default class PointPresenter {
 
     this.#pointComponent = new PointView({
       point: this.#point,
+      pointCommon: this.#pointCommon,
       onEditClick: this.#handleEditClick,
     });
 
     this.#pointEditComponent = new PointEditView({
       point: this.#point,
+      pointCommon: this.#pointCommon,
       onFormSubmit: this.#handleFormSubmit,
       onDeleteClick: this.#handleDeleteClick,
       onCloseClick: this.#handleCloseClick,
@@ -96,12 +102,26 @@ export default class PointPresenter {
     this.#replaceEventToForm();
   };
 
-  #handleFormSubmit = (point) => {
-    this.#handleDataChange(point);
+  #handleFormSubmit = (update) => {
+    const isPatchUpdate =
+      isDatesEqual(this.#point.dateFrom, update.dateFrom) &&
+      calculateTotalPrice(this.#point, this.#pointCommon) === calculateTotalPrice(update, this.#pointCommon);
+
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      isPatchUpdate ? UpdateType.PATCH : UpdateType.MINOR,
+      update,
+    );
     this.#replaceFormToEvent();
   };
 
-  #handleDeleteClick = () => { };
+  #handleDeleteClick = (point) => {
+    this.#handleDataChange(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
+  };
 
   #handleCloseClick = () => {
     this.#pointEditComponent.reset(this.#point);
