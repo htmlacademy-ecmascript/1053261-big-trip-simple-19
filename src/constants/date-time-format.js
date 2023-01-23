@@ -1,6 +1,0 @@
-export const DATE_TIME_FORMAT = {
-  HTML: 'YYYY-MM-DDTHH:mm',
-  POINT_DATE: 'MMM DD',
-  POINT_TIME: 'HH:mm',
-  POINT_DATE_TIME_FORM: 'DD/MM/YY HH:mm',
-};
