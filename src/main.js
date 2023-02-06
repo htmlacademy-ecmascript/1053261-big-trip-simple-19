@@ -55,4 +55,4 @@ Promise.all([
   pointCommonModel.init()])
   .then(() => {
     render(newPointButtonComponent, siteHeaderElement);
-  }).catch(() => { });
+  });
