@@ -1,6 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import dayjs from 'dayjs';
-import { calculateTotalPrice } from '../utils/point.js';
+import { calculateTotalPrice, getOffersByType } from '../utils/point.js';
 
 const createSelectedOffersTemplate = (point, pointCommon) => {
   if (point.selectedOffers.length === 0) {
@@ -8,7 +8,8 @@ const createSelectedOffersTemplate = (point, pointCommon) => {
   }
 
   return point.selectedOffers.map((selectedOfferId) => {
-    const selectedOffer = pointCommon.allOffers.find((offer) => offer.id === selectedOfferId);
+    const offersByType = getOffersByType(point, pointCommon);
+    const selectedOffer = offersByType.find((offer) => offer.id === selectedOfferId);
     return (`<li class="event__offer">
       <span class="event__offer-title">${selectedOffer.title}</span>
       &plus;&euro;&nbsp;
