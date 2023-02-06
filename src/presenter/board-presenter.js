@@ -1,4 +1,5 @@
 import { render, remove } from '../framework/render.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import SortView from '../view/sort-view.js';
 import PointListView from '../view/point-list-view.js';
 import NoPointView from '../view/no-point-view.js';
@@ -9,6 +10,11 @@ import NewPointPresenter from './new-point-presenter.js';
 import { sortDate, sortPrice, calculateTotalPrice } from '../utils/point.js';
 import { filter } from '../utils/filter.js';
 import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
+
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
 
 export default class BoardPresenter {
   #boardContainer = null;
@@ -30,6 +36,11 @@ export default class BoardPresenter {
   #isPointLoading = true;
   #isPointCommonLoading = true;
   #isErrorLoading = false;
+  #onNewPointDestroy = null;
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT
+  });
 
   constructor({ boardContainer, pointsModel, pointCommonModel, filterModel, onNewPointDestroy }) {
     this.#boardContainer = boardContainer;
@@ -37,13 +48,7 @@ export default class BoardPresenter {
     this.#pointCommonModel = pointCommonModel;
     this.#pointCommon = this.#pointCommonModel.pointCommon;
     this.#filterModel = filterModel;
-
-    this.#newPointPresenter = new NewPointPresenter({
-      pointListContainer: this.#pointListComponent.element,
-      pointCommon: this.#pointCommon,
-      onDataChange: this.#handleViewAction,
-      onDestroy: onNewPointDestroy
-    });
+    this.#onNewPointDestroy = onNewPointDestroy;
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#pointCommonModel.addObserver(this.#handleModelEvent);
@@ -81,23 +86,51 @@ export default class BoardPresenter {
     this.#newPointPresenter.init();
   }
 
+  #createNewPointPresenter() {
+    this.#newPointPresenter = new NewPointPresenter({
+      pointListContainer: this.#pointListComponent.element,
+      pointCommon: this.#pointCommon,
+      onDataChange: this.#handleViewAction,
+      onDestroy: this.#onNewPointDestroy,
+    });
+  }
+
   #handleModeChange = () => {
     this.#newPointPresenter.destroy();
     this.#pointPresenter.forEach((presenter) => presenter.resetView());
   };
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
+
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this.#pointsModel.updatePoint(updateType, update);
+        this.#pointPresenter.get(update.id).setSaving();
+        try {
+          await this.#pointsModel.updatePoint(updateType, update);
+        } catch (err) {
+          this.#pointPresenter.get(update.id).setAborting();
+        }
         break;
       case UserAction.ADD_POINT:
-        this.#pointsModel.addPoint(updateType, update);
+        this.#newPointPresenter.setSaving();
+        try {
+          await this.#pointsModel.addPoint(updateType, update);
+        } catch (err) {
+          this.#newPointPresenter.setAborting();
+        }
         break;
       case UserAction.DELETE_POINT:
-        this.#pointsModel.deletePoint(updateType, update);
+        this.#pointPresenter.get(update.id).setDeleting();
+        try {
+          await this.#pointsModel.deletePoint(updateType, update);
+        } catch (err) {
+          this.#pointPresenter.get(update.id).setAborting();
+        }
         break;
     }
+
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {
@@ -115,24 +148,23 @@ export default class BoardPresenter {
         break;
       case UpdateType.INIT_POINT:
         this.#isPointLoading = false;
-        if (!this.#isPointLoading && !this.#isPointCommonLoading) {
-          remove(this.#loadingComponent);
-          this.#renderBoard();
-        }
         break;
       case UpdateType.INIT_POINT_COMMON:
         this.#pointCommon = this.#pointCommonModel.pointCommon;
         this.#isPointCommonLoading = false;
-        if (!this.#isPointLoading && !this.#isPointCommonLoading) {
-          remove(this.#loadingComponent);
-          this.#renderBoard();
-        }
         break;
       case UpdateType.ERROR_LOADING:
         this.#isErrorLoading = true;
         remove(this.#loadingComponent);
         this.#renderBoard();
         break;
+    }
+    if ((updateType === UpdateType.INIT_POINT ||
+      updateType === UpdateType.INIT_POINT_COMMON) &&
+      (!this.#isPointLoading && !this.#isPointCommonLoading)) {
+      this.#createNewPointPresenter();
+      remove(this.#loadingComponent);
+      this.#renderBoard();
     }
   };
 
