@@ -84,6 +84,7 @@ export default class PointPresenter {
         isDisabled: true,
         isSaving: true,
       });
+      this.resetView();
     }
   }
 
